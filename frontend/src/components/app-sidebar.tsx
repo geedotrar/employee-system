@@ -30,22 +30,22 @@ const data = {
   projects: [
     {
       name: "Home",
-      url: "#",
+      url: "/app/home",
       icon: Frame,
     },
     {
       name: "Employee Data",
-      url: "#",
+      url: "/app/employee",
       icon: FolderKanban,
     },
     {
       name: "Monitoring",
-      url: "#",
+      url: "/app/monitoring",
       icon: UserCheck,
     },
     {
       name: "Settings",
-      url: "#",
+      url: "/app/settings",
       icon: Settings,
     },
   ],
