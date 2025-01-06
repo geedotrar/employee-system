@@ -1,28 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Link from 'next/link';
+import { LoginForm } from "@/components/ui/login-form"
 
-export default function Login() {
+export default function LoginPage() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="w-full max-w-xs space-y-4">
-        <h1 className="text-center text-2xl">Login Page</h1>
-        <div>
-          <label className="block text-left">Employee Code</label>
-          <Input name="employee_code" type="text" placeholder="Employee Code" />
-        </div>
-        <div>
-          <label className="block text-left">Password</label>
-          <Input name="password" type="password" placeholder="Password" />
-        </div>
-        <div className="flex justify-center">
-        <Link href="/home" legacyBehavior>
-          <a className="mt-1 w-full block">
-            <Button className="w-full">Login</Button>
-          </a>
-        </Link>
-        </div>
+    <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
+      <div className="w-full max-w-sm md:max-w-3xl">
+        <LoginForm />
       </div>
     </div>
-  );
+  )
 }
