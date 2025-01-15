@@ -40,7 +40,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Employee System</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-base">Employee System</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
