@@ -1,5 +1,6 @@
-import { Employee, columns } from "./columns"
-import { DataTable } from "./data-table"
+import { Button } from "@/components/ui/button";
+import { Employee, columns } from "./columns";
+import { DataTable } from "./data-table";
 
 async function getData(): Promise<Employee[]> {
   // Fetch data from your API here.
@@ -11,15 +12,18 @@ async function getData(): Promise<Employee[]> {
       position: "CTO",
     },
     // ...
-  ]
+  ];
 }
 
 export default async function EmployeePage() {
-  const data = await getData()
+  const data = await getData();
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+      <div className="flex justify-end mb-3">
+        <Button className="justify-end">Add Data</Button>
+      </div>
+      <DataTable columns={columns} data={data} />{" "}
     </div>
-  )
+  );
 }
