@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type UsersResponse struct {
 	Status  int     `json:"status"`
@@ -17,18 +21,18 @@ type UserResponse struct {
 }
 
 type User struct {
-	Id         int       `json:"id"`
-	Firstname  string    `json:"firstname"`
-	Lastname   string    `json:"lastname"`
-	Password   string    `json:"password"`
-	Email      string    `json:"email"`
-	RoleID     int       `json:"role_id"`
-	PositionID int       `json:"position_id"`
-	Role       Role      `json:"role" gorm:"foreignKey:RoleID"`
-	Position   Position  `json:"position" gorm:"foreignKey:PositionID"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
-	DeletedAt  time.Time `json:"deleted_at"`
+	Id         int            `json:"id"`
+	Firstname  string         `json:"firstname"`
+	Lastname   string         `json:"lastname"`
+	Password   string         `json:"password"`
+	Email      string         `json:"email"`
+	RoleID     int            `json:"role_id"`
+	PositionID int            `json:"position_id"`
+	Role       Role           `json:"role" gorm:"foreignKey:RoleID"`
+	Position   Position       `json:"position" gorm:"foreignKey:PositionID"`
+	CreatedAt  time.Time      `json:"created_at"`
+	UpdatedAt  time.Time      `json:"updated_at"`
+	DeletedAt  gorm.DeletedAt `json:"-" gorm:"column:deleted_at"`
 }
 
 type Role struct {
@@ -56,7 +60,14 @@ type UserRequest struct {
 	PositionID int    `json:"position_id" binding:"required"`
 }
 
-type UserLogin struct {
-	Email    string `json:"email" binding:"required"`
+type AuthRequest struct {
+	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
+}
+
+type AuthResponse struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Token   string `json:"token"`
+	Error   bool   `json:"error"`
 }
