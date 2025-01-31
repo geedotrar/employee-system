@@ -23,6 +23,9 @@ type UserQuery interface {
 	CreateUser(ctx context.Context, user models.User) (models.User, error)
 	UpdateUser(ctx context.Context, id uint64, user models.User) (models.User, error)
 	DeleteUser(ctx context.Context, id uint64) error
+
+	IsTokenBlacklisted(ctx context.Context, token string) (bool, error)
+	AddTokenToBlacklist(ctx context.Context, token string) error
 }
 
 type userQueryImpl struct {
@@ -71,7 +74,10 @@ func (u *userQueryImpl) GetRoleByID(ctx context.Context, id uint64) (models.Role
 	db := u.db.GetConnection()
 	var role models.Role
 
-	if err := db.WithContext(ctx).Where("id = ?", id).First(&role).Error; err != nil {
+	if err := db.WithContext(ctx).
+		Where("id = ?", id).
+		First(&role).
+		Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return models.Role{}, errors.New("role not found")
 		}
@@ -181,4 +187,35 @@ func (u *userQueryImpl) DeleteUser(ctx context.Context, id uint64) error {
 	}
 
 	return nil
+}
+
+func (u *userQueryImpl) IsTokenBlacklisted(ctx context.Context, token string) (bool, error) {
+	db := u.db.GetConnection()
+	var blacklisted models.BlackListedToken
+
+	err := db.WithContext(ctx).Where("token = ?", token).First(&blacklisted).Error
+	if err == nil {
+		return true, errors.New("token already blacklisted")
+	} else if errors.
+		Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
+	}
+	return false, err
+}
+
+func (u *userQueryImpl) AddTokenToBlacklist(ctx context.Context, token string) error {
+	db := u.db.GetConnection()
+
+	blacklistedToken := models.BlackListedToken{
+		Token:     token,
+		CreatedAt: time.Now(),
+		ExpiredAt: time.Now().Add(time.Hour),
+	}
+
+	return db.WithContext(ctx).Create(&blacklistedToken).Error
+}
+
+func (u *userQueryImpl) RemoveExpiredTokens(ctx context.Context) error {
+	db := u.db.GetConnection()
+	return db.WithContext(ctx).Where("expired_at < ?", time.Now()).Delete(&models.BlackListedToken{}).Error
 }

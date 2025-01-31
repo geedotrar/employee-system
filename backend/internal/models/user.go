@@ -71,3 +71,10 @@ type AuthResponse struct {
 	Token   string `json:"token"`
 	Error   bool   `json:"error"`
 }
+
+type BlackListedToken struct {
+	ID        int       `json:"id"`
+	Token     string    `json:"token"`
+	CreatedAt time.Time `json:"created_at"`
+	ExpiredAt time.Time `json:"expired_at"`
+}

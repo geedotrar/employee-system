@@ -167,9 +167,6 @@ func (u *userServiceImpl) Login(ctx context.Context, email string, password stri
 	if !auth.CheckPasswordHash(password, user.Password) {
 		return models.AuthResponse{}, errors.New("invalid email or password")
 	}
-	if !auth.CheckPasswordHash(password, user.Password) {
-		return models.AuthResponse{}, errors.New("invalid email or password")
-	}
 
 	token, err := auth.GenerateJWT(user.Email)
 	if err != nil {
@@ -196,6 +193,17 @@ func (u *userServiceImpl) GetUserByID(ctx context.Context, id uint64) (models.Us
 }
 
 func (u *userServiceImpl) Logout(ctx context.Context, token string) error {
+	isBlacklisted, err := u.repo.IsTokenBlacklisted(ctx, token)
+	if err != nil {
+		return err
+	}
+	if isBlacklisted {
+		return errors.New("token already blacklisted")
+	}
+
+	if err := u.repo.AddTokenToBlacklist(ctx, token); err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -30,7 +30,7 @@ func server() {
 	userRepo := repository.NewUserQuery(gorm)
 	userSvc := service.NewUserService(userRepo)
 	userHdl := handlers.NewUserHandler(userSvc)
-	userRouter := routes.NewUserRouter(usersGroup, userHdl)
+	userRouter := routes.NewUserRouter(usersGroup, userHdl, gorm)
 	userRouter.Mount()
 
 	g.Run(":8080")

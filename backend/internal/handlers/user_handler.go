@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"main.go/internal/models"
@@ -244,9 +245,15 @@ func (u *userHandlerImpl) LoginUser(ctx *gin.Context) {
 }
 
 func (u *userHandlerImpl) LogoutUser(ctx *gin.Context) {
-	token := ctx.GetHeader("Authorization")
-	if token == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is required"})
+		return
+	}
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+	if token == authHeader {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Bearer token is required"})
 		return
 	}
 
@@ -256,5 +263,5 @@ func (u *userHandlerImpl) LogoutUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Successfully logged out"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
