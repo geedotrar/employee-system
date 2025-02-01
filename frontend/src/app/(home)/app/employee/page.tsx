@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Employee, columns } from "./columns";
 import { DataTable } from "./data-table";
+import Link from "next/link";
+import { CirclePlusIcon } from "lucide-react";
 
 async function getData(): Promise<Employee[]> {
   // Fetch data from your API here.
@@ -19,9 +21,14 @@ export default async function EmployeePage() {
   const data = await getData();
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-end mb-3">
-        <Button className="justify-end">Add Data</Button>
+    <div className="container mx-auto">
+      <div className="mb-3 flex justify-end">
+        <Button asChild>
+          <Link href="/app/employee/create">
+            {" "}
+            <CirclePlusIcon /> Add Data
+          </Link>
+        </Button>
       </div>
       <DataTable columns={columns} data={data} />{" "}
     </div>

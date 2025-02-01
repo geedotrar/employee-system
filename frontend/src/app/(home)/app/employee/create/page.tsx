@@ -7,36 +7,18 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { EmployeeSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
-import { CustomFormField } from "@/components/ui/custom-form";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  fullName: z.string().min(3, {
-    message: "Fullname must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Email not valid.",
-  }),
-  phoneNumber: z.string().min(10, {
-    message: "Phone must be at least 10 characters.",
-  }),
-  position: z.string().min(2, {
-    message: "Position name must be at least 2 characters",
-  }),
-});
+import Link from "next/link";
 
 export function CreateForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof EmployeeSchema>>({
+    resolver: zodResolver(EmployeeSchema),
     defaultValues: {
       username: "",
       fullName: "",
@@ -47,11 +29,17 @@ export function CreateForm() {
   });
 
   const formFields = [
-    { name: "username", label: "Username", placeholder: "alfiankafilah" },
+    {
+      name: "username",
+      label: "Username",
+      placeholder: "alfiankafilah",
+      type: "text",
+    },
     {
       name: "fullName",
       label: "Full Name",
       placeholder: "Alfian Kafilah Baits",
+      type: "text",
     },
     {
       name: "email",
@@ -59,17 +47,44 @@ export function CreateForm() {
       placeholder: "alfian@example.com",
       type: "email",
     },
-    { name: "phoneNumber", label: "Phone Number", placeholder: "08123456789" },
-    { name: "position", label: "Position", placeholder: "CTO" },
-  ];
+    {
+      name: "phoneNumber",
+      label: "Phone Number",
+      placeholder: "08123456789",
+      type: "text",
+    },
+    { name: "position", label: "Position", placeholder: "CTO", type: "text" },
+  ] as const;
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(console.log)} className="space-y-4">
-        {formFields.map((field) => (
-          <CustomFormField key={field.name} control={form.control} {...field} />
+        {formFields.map((item) => (
+          <FormField
+            key={item.name}
+            control={form.control}
+            name={item.name}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{item.label}</FormLabel>
+                <FormControl>
+                  <Input
+                    type={item.type}
+                    placeholder={item.placeholder}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         ))}
-        <Button type="submit">Submit</Button>
+        <div className="flex items-center justify-end gap-x-2">
+          <Button variant="outline" type="button" asChild>
+            <Link href="/app/employee">Back</Link>
+          </Button>
+          <Button type="submit">Submit</Button>
+        </div>
       </form>
     </Form>
   );
